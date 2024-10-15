@@ -1,39 +1,16 @@
-#!/usr/bin/env python
-# coding: utf-8
 
-# # Lesson 6: Planning and Stock Report Generation
 
-# ## Setup
 
-# In[ ]:
-
+import autogen
 
 llm_config={"model": "gpt-4o-mini"}
-
-
-# ## The task!
-
-# In[ ]:
-
 
 task = "Write a blogpost about the stock price performance of "\
 "Nvidia in the past month. Today's date is 2024-04-23."
 
 
-# ## Build a group chat
-# 
-# This group chat will include these agents:
-# 
-# 1. **User_proxy** or **Admin**: to allow the user to comment on the report and ask the writer to refine it.
-# 2. **Planner**: to determine relevant information needed to complete the task.
-# 3. **Engineer**: to write code using the defined plan by the planner.
-# 4. **Executor**: to execute the code written by the engineer.
-# 5. **Writer**: to write the report.
-
-# In[ ]:
 
 
-import autogen
 user_proxy = autogen.ConversableAgent(
     name="Admin",
     system_message="Give the task, and send "
@@ -42,9 +19,6 @@ user_proxy = autogen.ConversableAgent(
     llm_config=llm_config,
     human_input_mode="ALWAYS",
 )
-
-
-# In[ ]:
 
 
 planner = autogen.ConversableAgent(
@@ -65,7 +39,7 @@ planner = autogen.ConversableAgent(
 )
 
 
-# In[ ]:
+
 
 
 engineer = autogen.AssistantAgent(
@@ -75,10 +49,6 @@ engineer = autogen.AssistantAgent(
     "provided by the planner.",
 )
 
-
-# **Note**: In this lesson, you'll use an alternative method of code execution by providing a dict config. However, you can always use the LocalCommandLineCodeExecutor if you prefer. For more details about code_execution_config, check this: https://microsoft.github.io/autogen/docs/reference/agentchat/conversable_agent/#__init__
-
-# In[ ]:
 
 
 executor = autogen.ConversableAgent(
@@ -94,8 +64,6 @@ executor = autogen.ConversableAgent(
 )
 
 
-# In[ ]:
-
 
 writer = autogen.ConversableAgent(
     name="Writer",
@@ -110,25 +78,13 @@ writer = autogen.ConversableAgent(
 )
 
 
-# In[ ]:
-
 
 groupchat = autogen.GroupChat(
     agents=[user_proxy, engineer, writer, executor, planner],
     messages=[],
     max_round=10,
-    allowed_or_disallowed_speaker_transitions={
-        user_proxy: [engineer, writer, executor, planner],
-        engineer: [user_proxy, executor],
-        writer: [user_proxy, planner],
-        executor: [user_proxy, engineer, planner],
-        planner: [user_proxy, engineer, writer],
-    },
-    speaker_transitions_type="allowed",
 )
 
-
-# In[ ]:
 
 
 manager = autogen.GroupChatManager(
