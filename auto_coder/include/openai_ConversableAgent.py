@@ -40,6 +40,8 @@ def trace(func):
                 #params= recipient.name
                 params= f'{owner.name}: {recipient.name}' 
 
+
+
             branch['calling'][apc.call_id]={'name': f'{class_name}.{method_name} ({params})','depth':apc.depth,'calling':{},'caller':apc.depth-1}
         
         print("Before the function runs.", apc.depth, class_name, method_name)
@@ -77,7 +79,7 @@ class ConversableAgent:
         max_turns=10
         for _ in range(max_turns):
             print(_)
-            manager.run_chat(self,message )
+            manager.run_chat(sender=self,messages=message )
             break
     @trace
     def generate_reply(self, task, mocked_response=None, response_format=None):

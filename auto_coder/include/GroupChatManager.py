@@ -30,6 +30,14 @@ def trace(func):
             else:
                 params=f'{owher}: {ahent_name}'
             #e()
+        if method_name == 'run_chat':
+            pp(args)
+            pp(kwargs)
+            messages= kwargs['messages'] #[0]['content']
+            sender= kwargs['sender']
+            owner=args[0]
+
+            params= f"{owner.name}: messages: {messages[:30]}, sender: {sender.name}"             
 
         branch['calling'][apc.call_id]={'name': f'{class_name}.{method_name} ({params})','depth':apc.depth,'calling':{},'caller':apc.depth-1}
        
