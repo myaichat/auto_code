@@ -55,9 +55,10 @@ def trace(func):
 
 class GroupChatManager:
     @trace
-    def __init__(self, groupchat, llm_config):
+    def __init__(self,name, groupchat, llm_config):
         self.groupchat = groupchat
         self.llm_config = llm_config
+        self.name=name
     @trace
-    def start_chat(self, initial_message):
-        self.groupchat.run_chat(initial_message)
+    def run_chat(self,sender, messages):
+        self.groupchat.select_speaker(sender, self, messages)

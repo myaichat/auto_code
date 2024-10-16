@@ -30,6 +30,16 @@ def trace(func):
             else:
                 params=f'{owher}: {ahent_name}'
             #e()
+        if method_name == 'select_speaker': 
+            pp(args)
+
+            pp(kwargs)
+            #e()
+            _,last_speaker, selector, messages=args
+            message=messages #[0]['content']
+            owner=args[0]
+            params= f'{class_name}: last_speaker: {last_speaker.name}, selector: {selector.name}, "{message[:30]}"'
+            # e()               
 
         branch['calling'][apc.call_id]={'name': f'{class_name}.{method_name} ({params})','depth':apc.depth,'calling':{},'caller':apc.depth-1}
        
@@ -62,12 +72,5 @@ class GroupChat:
     def add_message(self, message):
         self.messages.append(message)
     @trace
-    def run_chat(self, initial_message):
-        self.add_message(initial_message)
-        for round_num in range(self.max_round):
-
-            if 0:
-                for agent in self.agents:
-                    response = agent.execute(initial_message)
-                    self.add_message(response)
-                    print(f"Round {round_num + 1}: {response}")
+    def select_speaker(self, last_speaker, selector,message):
+        pass

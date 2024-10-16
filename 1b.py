@@ -77,7 +77,7 @@ groupchat = autogen.GroupChat(
     max_round=10,
 )
 
-manager = autogen.GroupChatManager(
+manager = autogen.GroupChatManager(name='manager',
     groupchat=groupchat, llm_config=llm_config
 )
 

@@ -17,12 +17,13 @@ def trace(func):
         apc.call_id +=1
         
         params=''
-        if method_name == '__init__':
-            pp(args)
-            pp(kwargs)
-            #e()
-            #class_name=args[0].__class__.__name__ 
-            if class_name!='AssistantAgent':
+        if class_name!='AssistantAgent':
+            if method_name == '__init__':
+                pp(args)
+                pp(kwargs)
+                #e()
+                #class_name=args[0].__class__.__name__ 
+            
                 name=kwargs.get('name', None) 
                 
                 messages=kwargs.get('system_message', None)
@@ -33,8 +34,14 @@ def trace(func):
                     params=f'{class_name}: {name}'
                 #e()
 
-        branch['calling'][apc.call_id]={'name': f'{class_name}.{method_name} ({params})','depth':apc.depth,'calling':{},'caller':apc.depth-1}
-       
+            if method_name == 'initiate_chat':
+                recipient=args[1]
+                owner=args[0]
+                #params= recipient.name
+                params= f'{owner.name}: {recipient.name}' 
+
+            branch['calling'][apc.call_id]={'name': f'{class_name}.{method_name} ({params})','depth':apc.depth,'calling':{},'caller':apc.depth-1}
+        
         print("Before the function runs.", apc.depth, class_name, method_name)
 
         print(f"Method '{class_name}.{method_name}' is about to be called.")
@@ -67,7 +74,11 @@ class ConversableAgent:
         self.client = OpenAI()  # Initialize the OpenAI client
     @trace
     def initiate_chat(self, manager, message):
-        manager.start_chat(message)
+        max_turns=10
+        for _ in range(max_turns):
+            print(_)
+            manager.run_chat(self,message )
+            break
     @trace
     def generate_reply(self, task, mocked_response=None, response_format=None):
         # Append user message to chat history
