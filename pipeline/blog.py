@@ -1,6 +1,6 @@
 
-from auto_code.include.common import *
-from  auto_code.include.agents.coding_blogger import Writer, Critic, Reviewer, Summarizer
+from auto_coder.include.common import *
+from  auto_coder.include.agents.coding_blogger import Writer, Critic, Reviewer, Summarizer
 
     
 import yaml

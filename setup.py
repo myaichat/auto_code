@@ -5,7 +5,7 @@ with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
 setup(
-    name='auto_code',
+    name='auto_coder',
     version='1.0.0',
     packages=find_packages(),
     install_requires=[
@@ -15,7 +15,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'blog=auto_code.blog:main',
+            'coding_blogger=auto_coder.coding_blogger:main',
         ],
     },
     include_package_data=True,
@@ -42,7 +42,7 @@ setup(
         'Tracker': 'https://github.com/myaichat/auto_reflection/issues',
     },
     changelog = """
-    Version 1.0.2:
-    - Added basic pipeline for auto blogging woth tools for code execution and blog writing
+    Version 1.0.0:
+    - Added basic pipeline for auto coding tools for code execution and blog writing
     """
 )
