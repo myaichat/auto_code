@@ -87,9 +87,11 @@ task = "Write a blogpost about the stock price performance of "\
    
 if 1:
     try:
+        max_turns = None #non-group chat
         groupchat_result = user_proxy.initiate_chat(
-            manager,
-            message=task,
+            recipient=manager,
+            messages=task,
+            max_turns=max_turns,    
         )
 
     except Exception as e:

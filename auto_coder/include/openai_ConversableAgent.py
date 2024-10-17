@@ -25,20 +25,37 @@ def trace(func):
                 #class_name=args[0].__class__.__name__ 
             
                 name=kwargs.get('name', None) 
-                
+                if not name:
+                    name=kwargs.get('name', None)
+
                 messages=kwargs.get('system_message', None)
                 
-                if  1:
+                if  messages:
                     params=f'{class_name}: {name}, {messages[:30]}'
                 else:
                     params=f'{class_name}: {name}'
                 #e()
 
             if method_name == 'initiate_chat':
-                recipient=args[1]
+                recipient=kwargs.get('recipient', None)
+                max_turns=kwargs.get('max_turns', None)
+                if not recipient:
+                    recipient=args[1]
                 owner=args[0]
                 #params= recipient.name
-                params= f'{owner.name}: {recipient.name}' 
+                params= f'{owner.name}: {recipient.name}, max_turns: {max_turns}' 
+
+            if method_name == 'init_chat_loop':
+                name=args[1]    
+                max_turns=args[2]
+                owner=args[0]
+                
+                params= f'{owner.name}: name: {name}, max_turns: {max_turns}'
+            if method_name == 'loop_leg':
+                loop_leg=args[1]
+                owner=args[0]
+                #params= recipient.name
+                params= f'{owner.name}: loop_leg: {loop_leg} ||||||||||||||||||' 
 
 
 
@@ -66,21 +83,37 @@ def trace(func):
 
 class ConversableAgent:
     @trace
-    def __init__(self, name,  llm_config=None,system_message =None, description=None,code_execution_config=None,
+    def __init__(self, name,  llm_config=None,system_message =None,chat_messages=None, description=None,code_execution_config=None,
                  human_input_mode=None):
         self.name = name
         self.system_message = system_message
         self.llm_config = llm_config
         self.description=description
+        self.chat_messages=chat_messages
         self.chat_history = []
         self.client = OpenAI()  # Initialize the OpenAI client
     @trace
-    def initiate_chat(self, manager, message):
-        max_turns=10
-        for _ in range(max_turns):
-            print(_)
-            manager.run_chat(sender=self,messages=message )
-            break
+    def init_chat_loop(self,  max_turns, name):
+        #just for 
+        pass
+    @trace
+    def loop_leg(self, loop_leg):
+        #just for 
+        pass    
+    @trace
+    def initiate_chat(self, recipient, messages, max_turns=None, loop_name='MAIN LOOP'):
+        if isinstance(max_turns, int): 
+            self.init_chat_loop(max_turns, loop_name)
+            for _ in range(max_turns):
+                self.loop_leg(f'{loop_name}: {_}')
+                print(_)
+                            
+                raise NotImplementedError
+                break
+        else:
+            #self.send(sender=self, recipient=recipient, messages=messages)
+            pp(recipient)
+            recipient.run_chat(sender=self,messages=messages, groupchat=recipient.groupchat)
     @trace
     def generate_reply(self, task, mocked_response=None, response_format=None):
         # Append user message to chat history

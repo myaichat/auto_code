@@ -16,19 +16,33 @@ def trace(func):
         apc.call_id +=1
         
         params=''
+        if method_name == 'GROUPCHAT_loop':
+            name=args[1]    
+            max_turns=args[2]
+            owner=args[0]
+            
+            params= f'{owner.name}: name: {name}, max_turns: {max_turns}'
+        if method_name == 'GROUPCHAT_leg':
+            loop_leg=args[1]
+            owner=args[0]
+            #params= recipient.name
+            params= f'{owner.name}: loop_leg: {loop_leg} ||||||||||||||||||' 
+
         if method_name == 'create':
             pp(args)
             pp(kwargs)
-            owher=args[0].__class__.__name__  
+            owner=args[0].__class__.__name__  
             agent=kwargs.get('agent', None)
-            ahent_name=agent.name if agent else 'None'
+            agent_name=agent.name if agent else 'None'
+            if not agent_name:
+                agent_name=kwargs.get('name', None) 
             if class_name=='OpenAIWrapper' and apc.show_create:
                 messages=kwargs.get('messages', None)
                 if not messages:
                     messages=args[1]['messages']
-                params=f'{owher}: {ahent_name}, {messages}'
+                params=f'{owner}: {agent_name}, {messages}'
             else:
-                params=f'{owher}: {ahent_name}'
+                params=f'{owner}: {agent_name}'
             #e()
         if method_name == 'run_chat':
             pp(args)
@@ -68,5 +82,18 @@ class GroupChatManager:
         self.llm_config = llm_config
         self.name=name
     @trace
-    def run_chat(self,sender, messages):
-        self.groupchat.select_speaker(sender, self, messages)
+    def GROUPCHAT_loop(self,  max_turns, name):
+        #just for 
+        pass
+    @trace
+    def GROUPCHAT_leg(self, loop_leg):
+        #just for 
+        pass   
+
+    @trace
+    def run_chat(self,sender, messages, groupchat):
+        self.GROUPCHAT_loop(groupchat.max_round, 'GROUP_CHAT_MANAGER: run_chat')
+        for i in range(groupchat.max_round):
+            self.GROUPCHAT_leg(i)
+            self.groupchat.select_speaker(sender, self, messages)
+            break
